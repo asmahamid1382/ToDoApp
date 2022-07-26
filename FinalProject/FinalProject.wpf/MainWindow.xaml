@@ -1,0 +1,35 @@
+﻿<Window x:Class="FinalProject.wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FinalProject.wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+<StackPanel>
+        <TextBox Name="tbname" Text = "{Binding Name}"/>
+        <TextBox Name="tbDescription" Text= "{Binding Description}" />
+        <TextBox Name="tbStatus" Text = "{Binding Status}"/>
+        <TextBox Name="tbDueDate" Text= "{Binding DueDate}" />
+        <Button Click="AddClicked">AddTask</Button>
+        <Button Click="DeleteClicked">DeleteTask</Button>
+        <Button Click="DoneClicked">Done</Button>
+        <ListBox Name="lbNames" 
+                 ItemsSource="{Binding Tasks}" 
+                 Height="150" 
+                 SelectedIndex="{Binding selectedIndex}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel> 
+                        <TextBox Text="{Binding Name, Mode = TwoWay}" />
+                        <TextBox Text="{Binding Description, Mode = TwoWay}" />
+                        <TextBox Text="{Binding Status, Mode = OneWay}" />
+                        <TextBox Text="{Binding Myday, Mode = TwoWay}" />
+                        <TextBox Text="{Binding DueDate, Mode = TwoWay}" />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>                 
+        </ListBox>
+        <DataGrid Name="dgTasks" ItemsSource="{Binding}" />
+    </StackPanel>
+</Window>

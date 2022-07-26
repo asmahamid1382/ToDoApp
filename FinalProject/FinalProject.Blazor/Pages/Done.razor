@@ -1,0 +1,54 @@
+@using FinalProjectApiCli.Model;
+@using FinalProjectApiCli.Api;
+@using FinalProjectApiCli.Client;
+@page "/Done"
+<PageTitle>Done Tasks</PageTitle>
+
+<h1 style="color:purple;"><center>Done Tasks</center></h1><br>
+@if (Tasks == null)
+{
+    <p><em>There is No Done Task</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>DueDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Task in Tasks)
+            {
+                <tr>
+                    <td>@Task.Name</td>
+                    <td>@Task.Description</td>
+                    <td>@Task.Status</td>
+                    <td>@Task.DueDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<MyTask> Tasks = new List<MyTask>();
+    private List<MyTask> Tasks2 = new List<MyTask>();
+
+    Configuration config = new Configuration() {BasePath = "http://localhost:5176"};
+    MyDayApi apiInstance;
+
+    protected override  void OnInitialized()
+    {
+        apiInstance =  new MyDayApi(config);
+        Tasks2= apiInstance.MyDayGet();
+        foreach(var t in Tasks2)
+        {
+            if (t.Status == true)
+            Tasks.Add(t);
+        }
+    }
+}

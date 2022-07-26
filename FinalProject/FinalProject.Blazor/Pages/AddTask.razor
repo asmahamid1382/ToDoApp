@@ -1,0 +1,75 @@
+﻿@using FinalProjectApiCli.Model;
+@using FinalProjectApiCli.Api;
+@using FinalProjectApiCli.Client;
+@page "/AddTask"
+
+<PageTitle>AddTask</PageTitle>
+
+<h1 style="color:purple;"><center>Add Task</center></h1><br>
+
+<h2 style="color:blue;" ><center>Todo (@todos.Count(todo => !todo.Status))</center></h2><br>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.Status" />
+            <input @bind="todo.Name" />
+            <input @bind="todo.Description" />
+            <input @bind="todo.DueDate" />
+        </li>
+    }
+</ul>
+
+<input placeholder="Name" @bind="newTodoName" />
+<input placeholder="Description" @bind="newTodoDescription" />
+<input placeholder="DueDate" @bind="newdueDate" />
+
+<button @onclick="AddTodo">Add to do</button>
+<button @onclick="StatusChange">Done</button>
+<button @onclick="Delete">Delete</button>
+
+@code {
+    private List<MyTask> todos = new();
+    private string? newTodoName;
+    private string? newTodoDescription;
+    
+    private string  newdueDate;
+    Configuration config = new Configuration() {BasePath = "http://localhost:5176"};
+    MyDayApi apiInstance;
+
+    protected override  void OnInitialized()
+    {
+        apiInstance =  new MyDayApi(config);
+    }
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodoName) && !string.IsNullOrWhiteSpace(newTodoDescription)
+         && !string.IsNullOrWhiteSpace(newdueDate))
+        {
+            var added = new MyTask (newTodoName,newTodoDescription,false,DateTime.Parse(newdueDate));
+            todos.Add(added);
+            newTodoName = string.Empty;
+            newTodoDescription=string.Empty;
+            newdueDate=string.Empty;
+            apiInstance.MyDayPost(added);
+        }
+    }
+    private void StatusChange()
+    {
+        if(!string.IsNullOrWhiteSpace(newTodoName))
+        {
+            var find = apiInstance.MyDayNameGet(newTodoName);
+            apiInstance.MyDayDonePost(find);
+        }
+    }
+    private void Delete()
+    {
+        if(!string.IsNullOrWhiteSpace(newTodoName))
+        {
+            apiInstance.MyDayNameDelete(newTodoName);
+
+        }
+    }
+}
